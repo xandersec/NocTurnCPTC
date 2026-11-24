@@ -5,6 +5,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -13,6 +14,20 @@ import (
 )
 
 func main() {
+	web := flag.Bool("web", false, "serve the browser GUI instead of the terminal UI")
+	addr := flag.String("web-addr", "127.0.0.1:8777", "address for --web to listen on")
+	flag.Parse()
+
+	// --web launches the browser interface (see web.go) and never returns until
+	// the server is stopped. Everything else starts the terminal UI below.
+	if *web {
+		if err := runWeb(*addr); err != nil {
+			fmt.Fprintln(os.Stderr, "error:", err)
+			os.Exit(1)
+		}
+		return
+	}
+
 	p := tea.NewProgram(newModel(), tea.WithAltScreen(), tea.WithMouseCellMotion())
 	res, err := p.Run()
 	if err != nil {

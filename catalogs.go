@@ -20,6 +20,7 @@ func catalogModes() []catalogMode {
 		{Key: "web", Label: "Web", tools: func() []Tool { return catalog }},
 		{Key: "ad", Label: "AD", tools: func() []Tool { return adCatalog }},
 		{Key: "linux", Label: "Linux", tools: func() []Tool { return linuxCatalog }},
+		{Key: "pivoting", Label: "Pivoting", tools: func() []Tool { return pivotingCatalog }},
 		{Key: "revshell", Label: "Reverse Shells", tools: func() []Tool { return revshellCatalog }},
 		{Key: "filetransfer", Label: "File Transfers", tools: func() []Tool { return fileTransferCatalog }},
 	}

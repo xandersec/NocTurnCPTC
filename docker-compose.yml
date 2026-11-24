@@ -1,0 +1,31 @@
+services:
+  phantomdeck:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # NmapResponder lives in a sibling repo; pull it in as a named build
+      # context so the main context stays small. Adjust the path if your repos
+      # are laid out differently.
+      additional_contexts:
+        nmapresponder: ../NmapResponder
+    image: phantomdeck:latest
+    container_name: phantomdeck
+    restart: unless-stopped
+
+    # Publish ONLY on this host's Tailscale IP, so the GUI is reachable from your
+    # tailnet (Kali, laptop, phone) and nothing else — not the LAN, not the
+    # internet. Set PD_BIND in .env to this host's tailnet IP: `tailscale ip -4`.
+    # (Leaving it unset falls back to 127.0.0.1 = local only.)
+    ports:
+      - "${PD_BIND:-127.0.0.1}:8777:8777"
+
+    volumes:
+      # Projects + generated Obsidian .canvas survive container restarts.
+      - phantomdeck-data:/data
+      # Optional: expose this host's Omarchy themes to the GUI. Only works if the
+      # Docker host runs Omarchy; otherwise leave commented (themes list is empty).
+      #- ${HOME}/.config/omarchy:/root/.config/omarchy:ro
+      #- ${HOME}/.local/state/omarchy:/root/.local/state/omarchy:ro
+
+volumes:
+  phantomdeck-data:

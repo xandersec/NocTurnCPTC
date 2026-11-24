@@ -1,0 +1,8 @@
+phantomdeck
+phantomdeck-test
+.git
+.gitignore
+*.canvas
+.gocache/
+.gotmp/
+.env
