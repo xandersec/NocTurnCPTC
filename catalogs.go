@@ -23,5 +23,6 @@ func catalogModes() []catalogMode {
 		{Key: "pivoting", Label: "Pivoting", tools: func() []Tool { return pivotingCatalog }},
 		{Key: "revshell", Label: "Reverse Shells", tools: func() []Tool { return revshellCatalog }},
 		{Key: "filetransfer", Label: "File Transfers", tools: func() []Tool { return fileTransferCatalog }},
+		{Key: "password", Label: "Passwords", tools: func() []Tool { return passwordCatalog }},
 	}
 }

@@ -327,7 +327,7 @@ function renderDetail(){
 function doCopy(log){
   var txt=document.getElementById('cmd').textContent;
   if(!txt)return;
-  navigator.clipboard.writeText(txt).then(function(){toast(log?'Copied + added to map':'Copied');}).catch(function(){toast('Copy failed');});
+  copyText(txt,log?'Copied + added to map':'Copied');
   if(log){
     api('/api/history',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({command:txt,tool:working.Name,catalog:CATS[curCat].Label})}).catch(function(){});
@@ -386,7 +386,23 @@ function nodeHTML(e,isRec){
   h+='</div></div>';
   return h;
 }
-function copyText(t){navigator.clipboard.writeText(t).then(function(){toast('Copied');}).catch(function(){});}
+function copyText(t,okMsg){
+  okMsg=okMsg||'Copied';
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(t).then(function(){toast(okMsg);}).catch(function(){legacyCopy(t,okMsg);});
+    return;
+  }
+  legacyCopy(t,okMsg);
+}
+function legacyCopy(t,okMsg){
+  var ta=document.createElement('textarea');
+  ta.value=t; ta.setAttribute('readonly','');
+  ta.style.position='fixed'; ta.style.top='-1000px'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  var ok=false; try{ok=document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+  toast(ok?okMsg:'Copy failed');
+}
 function markRun(cmd){
   api('/api/history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({command:cmd,tool:'from vector'})})
    .then(function(j){renderMap(j.entries||[]);toast('Added to path');});
